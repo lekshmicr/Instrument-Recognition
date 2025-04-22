@@ -157,12 +157,12 @@ conv_model = keras.Sequential([
     keras.layers.MaxPooling2D((2,2)),
     keras.layers.Dropout(0.2),
 
-    keras.layers.Conv2D(256, (3, 3), activation='relu', padding="same"),
+    keras.layers.Conv2D(128, (3, 3), activation='relu', padding="same"),
     keras.layers.BatchNormalization(),
     keras.layers.MaxPooling2D((2,2)),
     keras.layers.Dropout(0.2),
 
-    keras.layers.Conv2D(256, (3, 3), activation='relu', padding="same"),
+    keras.layers.Conv2D(64, (3, 3), activation='relu', padding="same"),
     keras.layers.BatchNormalization(),
     keras.layers.Flatten(),
 
@@ -249,18 +249,18 @@ test_images = testData.astype('float32') / 255
 test_labels = labels  # Use the 'labels' variable instead of 'testlabels'
 print(test_images.shape)
 print(test_labels.shape)
-labels = inv_model.predict(test_images)
+labels = conv_model.predict(test_images)
 test_out = np.argmax(np.round(labels),axis=1)
 print(test_labels) # Print test_labels instead of testlabels
 print(test_out)
-test_loss, test_acc = inv_model.evaluate(test_images, test_labels)
+test_loss, test_acc = conv_model.evaluate(test_images, test_labels)
 #print("Test loss: {0:.6f}, Test accuracy: {1:.6f}".format(test_loss,test_acc))
 print('Test accuracy:', test_acc*100)
 cm = confusion_matrix(test_labels, test_out) # Use test_labels instead of testlabels
 print(cm)
 cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 print(cm.diagonal())
-a = inv_model.predict(test_images)
+a = conv_model.predict(test_images)
 #print(a)
 import pandas as pd
 pd.DataFrame(a).to_csv("a.csv")
