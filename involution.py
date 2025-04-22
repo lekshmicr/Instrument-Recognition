@@ -92,11 +92,6 @@ train_labels = [label_mapping.get(path.split("/")[-2], -1) for path in train_ima
 # Check if any label is -1 (unknown) and handle it appropriately.
 if -1 in train_labels:
     print("WARNING: Unknown labels found. Check your dataset and label mapping.")
-    # Here you can decide how to handle unknown labels,
-    # for example, by removing the corresponding images:
-    # train_image_paths = [path for path, label in zip(train_image_paths, train_labels) if label != -1]
-    # train_labels = [label for label in train_labels if label != -1]
-
 # Load training images
 def load_image(path):
     img = tf.keras.utils.load_img(path)  # Use keras.utils.load_img to load image
@@ -317,7 +312,7 @@ from tensorflow import keras
 # Measure training time
 start_time = time.time()
 
-conv_hist = conv_model.fit(train_ds, epochs=1, validation_data=val_ds)
+conv_hist = conv_model.fit(train_ds, epochs=100, validation_data=val_ds)
 
 end_time = time.time()
 
@@ -366,7 +361,7 @@ from tensorflow import keras
 # Measure training time
 start_time = time.time()
 
-conv_hist = inv_model.fit(train_ds, epochs=1, validation_data=val_ds)
+conv_hist = inv_model.fit(train_ds, epochs=100, validation_data=val_ds)
 
 end_time = time.time()
 
@@ -465,7 +460,7 @@ print(cm.diagonal())
 a = inv_model.predict(test_images)
 #print(a)
 import pandas as pd
-pd.DataFrame(a).to_csv("a.csv")
+#pd.DataFrame(a).to_csv("a.csv")
 target_names = ['cel', 'cla', 'flu', 'gac', 'gel','org', 'pia','sax','tru','vio','voice']
 print(classification_report(test_labels, test_out, target_names=target_names)) # Use test_labels instead of testlabels
 # Plot confusion matrix
@@ -476,67 +471,6 @@ sns.heatmap(cm, annot=True, cmap='Blues')
 plt.xlabel('Predicted Labels')
 plt.ylabel('True Labels')
 plt.show()
-
-import time
-import tensorflow as tf
-import numpy as np
-
-dummy_input = np.random.rand(1, 32, 32, 3).astype(np.float32)
-
-# Use tf.device('/GPU:0') to synchronize GPU
-# with tf.device('/GPU:0'):
-#   tf.constant(0)
-# replaced by the code below so it works on systems without GPU
-if tf.test.is_gpu_available():
-    device = '/GPU:0'
-else:
-    device = '/CPU:0'
-with tf.device(device):
-  tf.constant(0)
-start_time = time.time()
-_ = conv_model.predict(dummy_input, verbose=0)
-
-# Use tf.device('/GPU:0') to synchronize GPU
-# with tf.device('/GPU:0'):
-#   tf.constant(0)
-# replaced by the code below so it works on systems without GPU
-with tf.device(device):
-  tf.constant(0)
-
-end_time = time.time()
-
-print(f"GPU Inference Time: {end_time - start_time:.6f} seconds")
-
-import time
-import tensorflow as tf
-import numpy as np
-
-dummy_input = np.random.rand(1, 32, 32, 3).astype(np.float32)
-
-# Use tf.device('/GPU:0') to synchronize GPU
-# with tf.device('/GPU:0'):
-#   tf.constant(0)
-# replaced by the code below so it works on systems without GPU
-if tf.test.is_gpu_available():
-    device = '/GPU:0'
-else:
-    device = '/CPU:0'
-with tf.device(device):
-  tf.constant(0)
-start_time = time.time()
-_ = inv_model.predict(dummy_input, verbose=0)
-
-# Use tf.device('/GPU:0') to synchronize GPU
-# with tf.device('/GPU:0'):
-#   tf.constant(0)
-# replaced by the code below so it works on systems without GPU
-with tf.device(device):
-  tf.constant(0)
-
-end_time = time.time()
-
-print(f"GPU Inference Time: {end_time - start_time:.6f} seconds")
-
 plt.figure(figsize=(20, 5))
 
 plt.subplot(1, 2, 1)
@@ -568,3 +502,6 @@ plt.plot(inv_hist.history["val_accuracy"], label="val_accuracy")
 plt.legend()
 
 plt.show()
+
+
+
